@@ -155,12 +155,15 @@ def render():
                     """, unsafe_allow_html=True)
                     current_month = entry_month
 
+                # ✅ 恢复：每条都包一层 timeline-container（轴线画在这里）
                 st.markdown(f"""
-                    <div class="timeline-entry">
-                        <div class="entry-meta">
-                            {entry['date']} ({entry['day']}) {entry['time']} • {entry['name']}
+                    <div class="timeline-container">
+                        <div class="timeline-entry">
+                            <div class="entry-meta">
+                                {entry['date']} ({entry['day']}) {entry['time']} • {entry['name']}
+                            </div>
+                            <div class="entry-content">{entry['content']}</div>
                         </div>
-                        <div class="entry-content">{entry['content']}</div>
                     </div>
                 """, unsafe_allow_html=True)
 
