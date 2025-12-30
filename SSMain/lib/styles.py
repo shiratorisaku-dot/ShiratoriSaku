@@ -38,6 +38,20 @@ def get_css():
                 4px 0 18px rgba(28, 28, 28, 0.12),
                 1px 0 0 rgba(255, 255, 255, 0.25) inset;
         }
+        
+        /* =========================
+            X) 禁用侧边栏伸缩：隐藏折叠按钮
+        ========================= */
+        /* 新版 Streamlit 常见 */
+        button[data-testid="collapsedControl"] { 
+            display: none !important; 
+        }
+
+        /* 有些版本折叠按钮会用这个结构（兜底） */
+        div[data-testid="stSidebarCollapsedControl"],
+        div[data-testid="stSidebarCollapseButton"] {
+            display: none !important;
+        }
 
         section[data-testid="stSidebar"] * {
             color: #1C1C1C !important;
