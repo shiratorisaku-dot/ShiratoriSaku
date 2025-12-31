@@ -1,0 +1,70 @@
+import os
+import importlib
+import streamlit as st
+from lib.styles import get_css
+
+st.set_page_config(
+    page_title="My Modular Space",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+st.markdown(get_css(), unsafe_allow_html=True)
+
+@st.cache_resource(show_spinner=False)
+def load_modules(parts_dir):
+    modules = {}
+    if not os.path.exists(parts_dir):
+        os.makedirs(parts_dir, exist_ok=True)
+
+    subfolders = sorted([
+        f.name for f in os.scandir(parts_dir)
+        if f.is_dir() and not f.name.startswith("__")
+    ])
+
+    for folder_name in subfolders:
+        try:
+            module = importlib.import_module(f"parts.{folder_name}")
+            module_info = getattr(module, "INFO", {"name": folder_name, "icon": "📦"})
+            render_func = getattr(module, "render", None)
+
+            if callable(render_func):
+                modules[module_info["name"]] = {
+                    "func": render_func,
+                    "icon": module_info.get("icon", "📦"),
+                }
+            else:
+                st.warning(f"Module '{folder_name}' has no callable render().")
+        except Exception as e:
+            st.error(f"Error loading module {folder_name}: {e}")
+
+    return modules
+
+def main():
+    parts_dir = os.path.join(os.path.dirname(__file__), "parts")
+    modules = load_modules(parts_dir)
+
+    with st.sidebar:
+        st.title("Navigation")
+        st.markdown("---")
+
+        options = list(modules.keys())
+        if not options:
+            st.warning("No modules found in 'parts/' folder.")
+            return
+
+        selection = st.radio(
+            "Go to",
+            options,
+            format_func=lambda x: f"{modules[x]['icon']}  {x}",
+            label_visibility="collapsed",
+        )
+
+        st.markdown("---")
+        st.caption("日月忽其不淹兮，春與秋其代序。")
+
+    if selection:
+        modules[selection]["func"]()
+
+if __name__ == "__main__":
+    main()
