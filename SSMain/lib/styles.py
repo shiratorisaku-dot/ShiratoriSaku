@@ -3,65 +3,54 @@ def get_css():
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:wght@500;700&family=Dancing+Script:wght@500;600;700&display=swap');
 
-        /* ------------------------------------------------------- */
-        /* 1. 头部与侧栏按钮控制 (核心修复部分) */
-        /* ------------------------------------------------------- */
+        /* ------------------------------------------------------------- */
+        /* 核心修复：Header 与 侧栏按钮控制 */
+        /* ------------------------------------------------------------- */
         
-        /* 不要隐藏整个 Header，否则会连同按钮一起隐藏。
-           改为背景透明，并允许点击穿透（这样不会挡住下面的内容） */
+        /* 1. 确保 Header 容器可见，位于最上层，但背景透明 */
         header[data-testid="stHeader"] {
-            background: transparent !important;
-            pointer-events: none; /* 让鼠标点击穿透 Header 区域 */
+            background-color: transparent !important;
+            z-index: 999999 !important; /* 强制在最上层，解决Cloud被覆盖问题 */
+            visibility: visible !important;
         }
-
-        /* 隐藏顶部彩虹装饰线 */
+        
+        /* 2. 隐藏顶部的彩虹装饰线 */
         div[data-testid="stDecoration"] {
             display: none !important;
         }
-
-        /* 隐藏右上角的功能菜单 (Running man, Settings, etc) */
+        
+        /* 3. 隐藏 Header 右侧的工具栏 (三点菜单, Deploy按钮等) */
+        /* 注意：如果你希望保留右上角菜单，请删除下面这行 */
         div[data-testid="stToolbar"], 
-        div[data-testid="stStatusWidget"] {
+        div[data-testid="stToolbar"] > * {
             display: none !important;
             visibility: hidden !important;
         }
 
-        /* 强制显示左上角的侧栏展开按钮，并恢复点击交互 */
-        button[data-testid="collapsedControl"],
-        div[data-testid="stSidebarCollapsedControl"] {
+        /* 4. 强制显示左上角的汉堡菜单按钮 (侧栏开关) */
+        button[data-testid="collapsedControl"] {
             display: block !important;
-            pointer-events: auto !important; /* 恢复按钮点击 */
-            z-index: 1000000 !important; /* 确保层级最高 */
-            color: #1C1C1C !important; /* 强制颜色，防止在浅色背景下看不见 */
-            background-color: transparent !important;
+            visibility: visible !important;
+            color: #1C1C1C !important; /* 强制设定颜色，防止变白 */
         }
         
-        /* 修复按钮内的图标颜色 */
-        button[data-testid="collapsedControl"] svg,
-        div[data-testid="stSidebarCollapsedControl"] svg {
-            fill: #1C1C1C !important;
-            color: #1C1C1C !important;
-        }
-
-        /* ------------------------------------------------------- */
-        /* 2. 隐藏标题链接锚点 (去除 🔗) */
-        /* ------------------------------------------------------- */
-        
-        /* 隐藏所有标题旁的链接图标 */
-        [data-testid="stMarkdownContainer"] h1 a, 
-        [data-testid="stMarkdownContainer"] h2 a, 
-        [data-testid="stMarkdownContainer"] h3 a,
-        h1 > a, h2 > a, h3 > a {
+        /* 5. 隐藏底部的 Footer */
+        footer {
             display: none !important;
-            pointer-events: none;
-            opacity: 0;
         }
 
-        /* ------------------------------------------------------- */
-        /* 3. 页面基础样式 */
-        /* ------------------------------------------------------- */
+        /* ------------------------------------------------------------- */
+        /* 其它样式保持不变 */
+        /* ------------------------------------------------------------- */
 
-        #MainMenu, footer {
+        /* 隐藏标题旁的链接图标 */
+        h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {
+            display: none !important;
+            pointer-events: none; 
+        }
+        [data-testid="stMarkdownContainer"] h1 a, 
+        [data-testid="stMarkdownContainer"] h2 a,
+        [data-testid="stMarkdownContainer"] h3 a {
             display: none !important;
         }
 
@@ -75,29 +64,15 @@ def get_css():
             font-family: 'Cormorant Garamond', serif;
         }
 
-        /* ------------------------------------------------------- */
-        /* 4. 侧栏样式 */
-        /* ------------------------------------------------------- */
-        
         section[data-testid="stSidebar"] {
             background-color: #D7C4BB;
             box-shadow: 4px 0 18px rgba(28, 28, 28, 0.12), 1px 0 0 rgba(255, 255, 255, 0.25) inset;
         }
 
-        /* 确保侧栏内的文字样式 */
         section[data-testid="stSidebar"] * {
             color: #1C1C1C !important;
             font-family: 'Playfair Display', serif;
         }
-
-        /* 隐藏侧栏内部原本的关闭按钮（可选，防止双重按钮，视版本而定） */
-        section[data-testid="stSidebar"] button[kind="header"] {
-            /* 通常不需要隐藏，Streamlit 会自动处理 */
-        }
-
-        /* ------------------------------------------------------- */
-        /* 5. 组件自定义样式 (卡片、时间轴、留言板) */
-        /* ------------------------------------------------------- */
 
         h1, h2, h3 {
             font-family: 'Playfair Display', serif !important;
@@ -133,7 +108,6 @@ def get_css():
             transform: scale(1.02);
         }
 
-        /* Timeline 样式 */
         .timeline-container {
             position: relative;
             padding-left: 30px;
@@ -205,7 +179,6 @@ def get_css():
             opacity: 0.7;
         }
 
-        /* 留言板样式 */
         .guestbook-grid-anchor {
             position: relative;
             z-index: 0;
