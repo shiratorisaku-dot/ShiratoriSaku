@@ -3,40 +3,65 @@ def get_css():
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:wght@500;700&family=Dancing+Script:wght@500;600;700&display=swap');
 
-        /* 隐藏 Streamlit 默认头部装饰，但保留侧栏触发区 */
+        /* ------------------------------------------------------- */
+        /* 1. 头部与侧栏按钮控制 (核心修复部分) */
+        /* ------------------------------------------------------- */
+        
+        /* 不要隐藏整个 Header，否则会连同按钮一起隐藏。
+           改为背景透明，并允许点击穿透（这样不会挡住下面的内容） */
         header[data-testid="stHeader"] {
-            background: transparent;
+            background: transparent !important;
+            pointer-events: none; /* 让鼠标点击穿透 Header 区域 */
         }
 
-        /* 隐藏顶部红线装饰 */
+        /* 隐藏顶部彩虹装饰线 */
         div[data-testid="stDecoration"] {
             display: none !important;
         }
 
-        /* 隐藏右上角汉堡菜单和 Footer */
-        div[data-testid="stToolbar"],
-        #MainMenu,
-        footer {
+        /* 隐藏右上角的功能菜单 (Running man, Settings, etc) */
+        div[data-testid="stToolbar"], 
+        div[data-testid="stStatusWidget"] {
             display: none !important;
             visibility: hidden !important;
         }
 
-        /* 【修改点 1】删除了之前隐藏 collapsedControl 的代码块 */
-        /* 确保左上角的侧栏展开按钮（汉堡菜单/箭头）可见 */
-        button[data-testid="collapsedControl"] {
+        /* 强制显示左上角的侧栏展开按钮，并恢复点击交互 */
+        button[data-testid="collapsedControl"],
+        div[data-testid="stSidebarCollapsedControl"] {
             display: block !important;
+            pointer-events: auto !important; /* 恢复按钮点击 */
+            z-index: 1000000 !important; /* 确保层级最高 */
+            color: #1C1C1C !important; /* 强制颜色，防止在浅色背景下看不见 */
+            background-color: transparent !important;
+        }
+        
+        /* 修复按钮内的图标颜色 */
+        button[data-testid="collapsedControl"] svg,
+        div[data-testid="stSidebarCollapsedControl"] svg {
+            fill: #1C1C1C !important;
             color: #1C1C1C !important;
         }
 
-        /* 【修改点 2】隐藏标题旁边的锚点链接图标 (🔗) */
-        h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {
-            display: none !important;
-            pointer-events: none; 
-        }
-        /* 针对 Streamlit 新版结构的额外覆盖 */
+        /* ------------------------------------------------------- */
+        /* 2. 隐藏标题链接锚点 (去除 🔗) */
+        /* ------------------------------------------------------- */
+        
+        /* 隐藏所有标题旁的链接图标 */
         [data-testid="stMarkdownContainer"] h1 a, 
-        [data-testid="stMarkdownContainer"] h2 a,
-        [data-testid="stMarkdownContainer"] h3 a {
+        [data-testid="stMarkdownContainer"] h2 a, 
+        [data-testid="stMarkdownContainer"] h3 a,
+        h1 > a, h2 > a, h3 > a {
+            display: none !important;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        /* ------------------------------------------------------- */
+        /* 3. 页面基础样式 */
+        /* ------------------------------------------------------- */
+
+        #MainMenu, footer {
             display: none !important;
         }
 
@@ -50,15 +75,29 @@ def get_css():
             font-family: 'Cormorant Garamond', serif;
         }
 
+        /* ------------------------------------------------------- */
+        /* 4. 侧栏样式 */
+        /* ------------------------------------------------------- */
+        
         section[data-testid="stSidebar"] {
             background-color: #D7C4BB;
             box-shadow: 4px 0 18px rgba(28, 28, 28, 0.12), 1px 0 0 rgba(255, 255, 255, 0.25) inset;
         }
 
+        /* 确保侧栏内的文字样式 */
         section[data-testid="stSidebar"] * {
             color: #1C1C1C !important;
             font-family: 'Playfair Display', serif;
         }
+
+        /* 隐藏侧栏内部原本的关闭按钮（可选，防止双重按钮，视版本而定） */
+        section[data-testid="stSidebar"] button[kind="header"] {
+            /* 通常不需要隐藏，Streamlit 会自动处理 */
+        }
+
+        /* ------------------------------------------------------- */
+        /* 5. 组件自定义样式 (卡片、时间轴、留言板) */
+        /* ------------------------------------------------------- */
 
         h1, h2, h3 {
             font-family: 'Playfair Display', serif !important;
@@ -94,6 +133,7 @@ def get_css():
             transform: scale(1.02);
         }
 
+        /* Timeline 样式 */
         .timeline-container {
             position: relative;
             padding-left: 30px;
@@ -165,6 +205,7 @@ def get_css():
             opacity: 0.7;
         }
 
+        /* 留言板样式 */
         .guestbook-grid-anchor {
             position: relative;
             z-index: 0;
