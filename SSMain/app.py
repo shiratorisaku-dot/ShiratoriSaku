@@ -18,40 +18,55 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-PARTS_DIR = os.path.join(os.path.dirname(__file__), "parts")
-
 @st.cache_resource(show_spinner=False)
-def load_modules():
+def load_modules(parts_dir):
     modules = {}
-    for folder in sorted(os.listdir(PARTS_DIR)):
-        if folder.startswith("_"):
-            continue
-        module_path = f"parts.{folder}"
+    if not os.path.exists(parts_dir):
+        os.makedirs(parts_dir, exist_ok=True)
+
+    subfolders = sorted([
+        f.name for f in os.scandir(parts_dir)
+        if f.is_dir() and not f.name.startswith("__")
+    ])
+
+    for folder_name in subfolders:
         try:
-            mod = importlib.import_module(module_path)
-            info = getattr(mod, "INFO", None)
-            render_func = getattr(mod, "render", None)
-            if info and render_func:
-                modules[info["name"]] = {
-                    "icon": info.get("icon", ""),
-                    "func": render_func
+            module = importlib.import_module(f"parts.{folder_name}")
+            module_info = getattr(module, "INFO", {"name": folder_name, "icon": "📦"})
+            render_func = getattr(module, "render", None)
+
+            if callable(render_func):
+                modules[module_info["name"]] = {
+                    "func": render_func,
+                    "icon": module_info.get("icon", "📦"),
                 }
-        except Exception:
-            continue
+            else:
+                st.warning(f"Module '{folder_name}' has no callable render().")
+        except Exception as e:
+            st.error(f"Error loading module {folder_name}: {e}")
+
     return modules
 
 def main():
-    modules = load_modules()
-    options = list(modules.keys())
+    parts_dir = os.path.join(os.path.dirname(__file__), "parts")
+    modules = load_modules(parts_dir)
 
     with st.sidebar:
-        st.markdown("## Navigation")
+        st.title("Navigation")
+        st.markdown("---")
+
+        options = list(modules.keys())
+        if not options:
+            st.warning("No modules found in 'parts/' folder.")
+            return
+
         selection = st.radio(
             "Go to",
             options,
             format_func=lambda x: f"{modules[x]['icon']}  {x}",
             label_visibility="collapsed",
         )
+
         st.markdown("---")
         st.caption("日月忽其不淹兮，春與秋其代序。")
 
