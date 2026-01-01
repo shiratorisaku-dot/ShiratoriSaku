@@ -50,14 +50,38 @@ def get_css():
         section[data-testid="stSidebar"] {{
             background-color: #D7C4BB;
             box-shadow: 4px 0 18px rgba(28, 28, 28, 0.12), 1px 0 0 rgba(255, 255, 255, 0.25) inset;
+            width: 300px !important;
             min-width: 300px !important;
+            max-width: 300px !important;
+            flex: 0 0 300px !important;
             z-index: 10000;
         }}
 
-        button[data-testid="collapsedControl"],
-        div[data-testid="stSidebarCollapsedControl"],
         div[data-testid="stSidebarCollapseButton"] {{
             display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }}
+
+        button[data-testid="collapsedControl"],
+        div[data-testid="stSidebarCollapsedControl"] {{
+            display: none !important;
+            visibility: hidden !important;
+        }}
+
+        @media (max-width: 768px) {{
+            button[data-testid="collapsedControl"],
+            div[data-testid="stSidebarCollapsedControl"] {{
+                display: flex !important;
+                visibility: visible !important;
+            }}
+
+            button[data-testid="collapsedControl"] {{
+                position: fixed !important;
+                left: 12px !important;
+                top: 12px !important;
+                z-index: 20000 !important;
+            }}
         }}
 
         div[data-testid="stRadio"] > div[role="radiogroup"] {{
