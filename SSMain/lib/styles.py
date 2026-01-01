@@ -28,14 +28,56 @@ def get_css():
             display: none !important;
         }}
 
-        header[data-testid="stHeader"],
-        div[data-testid="stToolbar"],
-        div[data-testid="stDecoration"],
-        #MainMenu,
-        footer {{
-            display: none !important;
-            visibility: hidden !important;
-        }}
+        header[data-testid="stHeader"]{{
+  background: transparent !important;
+  box-shadow: none !important;
+  height: 0px !important;
+  border: 0 !important;
+}}
+
+/* 这些照旧隐藏 */
+div[data-testid="stToolbar"],
+div[data-testid="stDecoration"],
+#MainMenu,
+footer {{
+  display: none !important;
+  visibility: hidden !important;
+}}
+
+/* 用 aria-label 兜底：不同版本 Streamlit 也能抓到按钮 */
+/* 收起按钮：全端隐藏 */
+button[aria-label="Close sidebar"],
+div[data-testid="stSidebarCollapseButton"]{{
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}}
+
+/* 默认：桌面端不显示展开按钮 */
+button[aria-label="Open sidebar"],
+button[data-testid="collapsedControl"],
+div[data-testid="stSidebarCollapsedControl"]{{
+  display: none !important;
+  visibility: hidden !important;
+}}
+
+/* 手机端：显示“展开侧栏”按钮 */
+@media (max-width: 768px){{
+  button[aria-label="Open sidebar"],
+  button[data-testid="collapsedControl"],
+  div[data-testid="stSidebarCollapsedControl"]{{
+    display: flex !important;
+    visibility: visible !important;
+  }}
+
+  button[aria-label="Open sidebar"],
+  button[data-testid="collapsedControl"]{{
+    position: fixed !important;
+    left: 12px !important;
+    top: 12px !important;
+    z-index: 20000 !important;
+    }}
+}}
 
         .block-container {{
             padding-top: 2.2rem !important;
@@ -47,6 +89,7 @@ def get_css():
             font-family: 'Cormorant Garamond', serif;
         }}
 
+        /* ===== Sidebar: 固定 300px ===== */
         section[data-testid="stSidebar"] {{
             background-color: #D7C4BB;
             box-shadow: 4px 0 18px rgba(28, 28, 28, 0.12), 1px 0 0 rgba(255, 255, 255, 0.25) inset;
@@ -57,18 +100,26 @@ def get_css():
             z-index: 10000;
         }}
 
+        /* ===== 侧栏按钮显示规则 =====
+           - 手机端：只显示“展开”(collapsedControl)
+           - 全端：不显示“收起”(collapse button)
+           - 电脑端：展开按钮也隐藏
+        */
+        /* 收起按钮：全端隐藏 */
         div[data-testid="stSidebarCollapseButton"] {{
             display: none !important;
             visibility: hidden !important;
             pointer-events: none !important;
         }}
 
+        /* 默认先隐藏展开按钮（桌面端保持全隐藏） */
         button[data-testid="collapsedControl"],
         div[data-testid="stSidebarCollapsedControl"] {{
             display: none !important;
             visibility: hidden !important;
         }}
 
+        /* 手机端显示“展开侧栏”按钮（不要收起按钮） */
         @media (max-width: 768px) {{
             button[data-testid="collapsedControl"],
             div[data-testid="stSidebarCollapsedControl"] {{
@@ -76,6 +127,7 @@ def get_css():
                 visibility: visible !important;
             }}
 
+            /* 让展开按钮不被别的层挡住（可选，但很实用） */
             button[data-testid="collapsedControl"] {{
                 position: fixed !important;
                 left: 12px !important;
