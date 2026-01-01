@@ -1,5 +1,6 @@
 import random
 
+
 def get_css():
     def create_snow_layer(n_flakes):
         shadows = []
@@ -17,8 +18,6 @@ def get_css():
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:wght@500;700&family=Dancing+Script:wght@500;600;700&display=swap');
 
-        /* === 修复部分开始：将 Header 从全局隐藏中移除，单独处理 === */
-        
         .anchor-link, h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {{
             display: none !important;
             visibility: hidden !important;
@@ -29,7 +28,7 @@ def get_css():
             display: none !important;
         }}
 
-        /* 这里移除了 header[data-testid="stHeader"]，改为在下面单独定义 */
+        header[data-testid="stHeader"],
         div[data-testid="stToolbar"],
         div[data-testid="stDecoration"],
         #MainMenu,
@@ -37,16 +36,6 @@ def get_css():
             display: none !important;
             visibility: hidden !important;
         }}
-        
-        /* 桌面端隐藏 Header */
-        @media (min-width: 769px) {{
-            header[data-testid="stHeader"] {{
-                display: none !important;
-                visibility: hidden !important;
-            }}
-        }}
-
-        /* === 修复部分结束 === */
 
         .block-container {{
             padding-top: 2.2rem !important;
@@ -68,57 +57,30 @@ def get_css():
             z-index: 10000;
         }}
 
-        /* 隐藏桌面端的折叠按钮，避免冲突 */
-        @media (min-width: 769px) {{
-            div[data-testid="stSidebarCollapseButton"],
-            button[data-testid="collapsedControl"],
-            div[data-testid="stSidebarCollapsedControl"] {{
-                display: none !important;
-            }}
+        div[data-testid="stSidebarCollapseButton"] {{
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
         }}
 
-        /* === 移动端关键修复 === */
-        @media (max-width: 768px) {{
-            /* 1. 让 Header 容器回归，但透明，不占据视觉干扰 */
-            header[data-testid="stHeader"] {{
-                display: block !important;
-                visibility: visible !important;
-                background-color: transparent !important;
-                pointer-events: none; /* 让点击穿透 Header 空白处 */
-            }}
-            
-            /* 2. 隐藏 Header 里的装饰条，只留按钮 */
-            header[data-testid="stHeader"] > div:first-child {{
-                background: transparent !important;
-            }}
+        button[data-testid="collapsedControl"],
+        div[data-testid="stSidebarCollapsedControl"] {{
+            display: none !important;
+            visibility: hidden !important;
+        }}
 
-            /* 3. 强制显示侧边栏控制按钮，并允许点击 */
+        @media (max-width: 768px) {{
             button[data-testid="collapsedControl"],
             div[data-testid="stSidebarCollapsedControl"] {{
                 display: flex !important;
                 visibility: visible !important;
-                pointer-events: auto !important; /* 恢复点击事件 */
-                color: #1C1C1C !important; /* 确保图标颜色是黑的，否则可能是白色看不见 */
             }}
-            
-            /* 4. 定位按钮 (保持你原有的逻辑，稍作增强) */
+
             button[data-testid="collapsedControl"] {{
                 position: fixed !important;
                 left: 12px !important;
                 top: 12px !important;
                 z-index: 20000 !important;
-                background-color: rgba(255, 255, 255, 0.5) !important; /* 可选：加个半透明底色增加可见度 */
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                justify-content: center;
-                align-items: center;
-            }}
-            
-            /* 修复 SVG 图标颜色 */
-            button[data-testid="collapsedControl"] svg {{
-                fill: #1C1C1C !important;
-                stroke: #1C1C1C !important;
             }}
         }}
 
