@@ -57,30 +57,48 @@ def get_css():
             z-index: 10000;
         }}
 
-        div[data-testid="stSidebarCollapseButton"] {{
+        div[data-testid="stSidebarCollapseButton"],
+        div[data-testid="stSidebarCollapseButton"] button,
+        button[aria-label="Close sidebar"],
+        button[title="Close sidebar"] {{
             display: none !important;
             visibility: hidden !important;
             pointer-events: none !important;
         }}
 
         button[data-testid="collapsedControl"],
-        div[data-testid="stSidebarCollapsedControl"] {{
+        div[data-testid="stSidebarCollapsedControl"],
+        div[data-testid="stSidebarCollapsedControl"] button,
+        button[aria-label="Open sidebar"],
+        button[title="Open sidebar"] {{
             display: none !important;
             visibility: hidden !important;
         }}
 
         @media (max-width: 768px) {{
+            header[data-testid="stHeader"] {{
+                display: block !important;
+                visibility: visible !important;
+                background: transparent !important;
+            }}
+
             button[data-testid="collapsedControl"],
-            div[data-testid="stSidebarCollapsedControl"] {{
+            div[data-testid="stSidebarCollapsedControl"],
+            div[data-testid="stSidebarCollapsedControl"] button,
+            button[aria-label="Open sidebar"],
+            button[title="Open sidebar"] {{
                 display: flex !important;
                 visibility: visible !important;
             }}
 
-            button[data-testid="collapsedControl"] {{
+            button[data-testid="collapsedControl"],
+            button[aria-label="Open sidebar"],
+            button[title="Open sidebar"] {{
                 position: fixed !important;
                 left: 12px !important;
                 top: 12px !important;
                 z-index: 20000 !important;
+                pointer-events: auto !important;
             }}
         }}
 
@@ -105,7 +123,7 @@ def get_css():
         }}
 
         div[data-testid="stRadio"] label:has(input:checked) div[data-testid="stMarkdownContainer"] p {{
-            transform: scale(1.3) translateX(8px); 
+            transform: scale(1.3) translateX(8px);
             font-weight: 600 !important;
             color: #1C1C1C !important;
             text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
@@ -113,7 +131,7 @@ def get_css():
 
         div[data-testid="stRadio"] label:hover div[data-testid="stMarkdownContainer"] p {{
             color: #1C1C1C !important;
-            transform: translateX(4px); 
+            transform: translateX(4px);
         }}
 
         div[data-testid="stRadio"] label:has(input:checked):hover div[data-testid="stMarkdownContainer"] p {{
@@ -140,7 +158,7 @@ def get_css():
             border: 1px solid rgba(215, 196, 187, 0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             margin-bottom: 20px;
-            position: relative; 
+            position: relative;
             z-index: 10;
         }}
 
@@ -303,7 +321,7 @@ def get_css():
             width: 100vw;
             height: 100vh;
             pointer-events: none;
-            z-index: 1; 
+            z-index: 1;
             overflow: hidden;
         }}
 
