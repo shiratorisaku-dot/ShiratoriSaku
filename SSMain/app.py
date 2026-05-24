@@ -4,7 +4,7 @@ import streamlit as st
 from lib.styles import get_css
 
 st.set_page_config(
-    page_title="My Modular Space",
+    page_title="SS",
     layout="wide",
     initial_sidebar_state="expanded",
 )
